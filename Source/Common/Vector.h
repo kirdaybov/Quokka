@@ -37,7 +37,7 @@ namespace quokka
 
   struct QRotation : public Vector
   {
-    QRotation() {}
+    QRotation() { x = 0.f; }
     QRotation(Vector& v) { x = v.x; y = v.y; z = v.z; }
 
     static QRotation FromDirection(Vector v)

@@ -10,7 +10,7 @@ namespace quokka
 
 		Factory = new ActorFactory(this);
 		//Factory->CreateWorld(30);
-		Hero = Factory->CreateHero();
+		//Hero = Factory->CreateHero();
     //for (int i = 0; i < 100; i++)
     //  Factory->CreateEnemy(Vector(rand() % 100, rand() % 100)/100.f + Vector(1.f));		
 	}
@@ -23,7 +23,10 @@ namespace quokka
     mce->MousePosition.x = (mce->MousePosition.x / 1024 - 0.5f)*1024/768/0.3f*2;
     mce->MousePosition.y = -(mce->MousePosition.y / 768 - 0.5f)         /0.3f*2;
     
-    Factory->CreateGenderedPerson(SpawnPosition + mce->MousePosition, mce->bRight);
+    if (mce->bRight)
+      std::weak_ptr<Actor>(Factory->CreateFood(SpawnPosition + mce->MousePosition));
+    else
+      Factory->CreateGenderedPerson(SpawnPosition + mce->MousePosition, rand() % 2 == 0);
 
     return 0;
   }

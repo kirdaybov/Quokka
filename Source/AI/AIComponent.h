@@ -36,11 +36,7 @@ namespace quokka
         GetOwner()->MarkForDelete();
     }
 
-    void StartMove()
-    {
-      State = AIState::Moving;
-      Target = GetOwner()->GetWorldPosition() + Vector(rand() % 11 - 5, rand() % 11 - 5)/5.f;
-    }
+    void StartMove();
 
     void Move()
     {
@@ -69,10 +65,12 @@ namespace quokka
     void DoStuff();
 
     void Think()
-    {      
-      int x = rand() % 100;
-      if (x < 50) StartMove();
-      else Wait();      
+    { 
+      switch (State)
+      {
+      //case AIState::Moving: Wait(); break;
+      default: StartMove(); break;
+      }        
     }
 
     bool IsFemale() { return bFemale; }

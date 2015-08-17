@@ -8,6 +8,10 @@
 
 namespace quokka
 {
+  class Food : public Actor
+  {
+  };
+
 	class ActorFactory
 	{
 	public:
@@ -41,6 +45,17 @@ namespace quokka
 
       Game->Actors.push_back(std::shared_ptr<Actor>(Enemy));
 		}
+
+    std::shared_ptr<Actor> CreateFood(Vector WorldPosition)
+    {
+      Actor* lFood = new Food();
+      lFood->SetWorldPosition(WorldPosition);
+      lFood->AddComponent(new RenderableComponent(Color(0.f, 1.f, 0.f)));
+      lFood->AddComponent(new PhysicsComponent(Vector(0.03f, 0.03f)));
+      std::shared_ptr<Actor> pFood(lFood);
+      Game->Actors.push_back(pFood);
+      return pFood;
+    }
 
     void CreateGenderedPerson(Vector WorldPosition, bool bFemale)
     {

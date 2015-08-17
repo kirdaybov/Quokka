@@ -45,7 +45,7 @@ namespace quokka
       for (int i = 0; i < Actors.size(); i++)
       {        
         if (Actors[i]->NeedsDelete())
-        {     
+        { 
           Actors.erase(Actors.begin() + i);
           i--;
         }          
@@ -62,21 +62,37 @@ namespace quokka
       return &Actors;
     }
 
-    ActorFactory* Factory = nullptr;
+    template<class T>
+    std::vector<std::weak_ptr<Actor>> GetActorsByClass()
+    {
+      std::vector<std::weak_ptr<Actor>> res;
+      for (auto Actor : Actors)
+      {
+        T* Candidate = dynamic_cast<T*>(Actor.get());
+        if (Candidate)
+          res.push_back(Actor);
+      }
 
+      return res;
+    }
+
+    ActorFactory* Factory = nullptr;    
   private:
 
     Vector GetCameraPosition()
     {
-      return Hero->GetWorldPosition();
+      if (Hero)
+        return Hero->GetWorldPosition();
+      else
+        return Vector();
     }
 
     bool bStop;
 
-    Actor* Hero;	
+    Actor* Hero = nullptr;	
 	
 	  Physics* Physics;	
-		std::vector<std::shared_ptr<Actor>> Actors;
+		std::vector<std::shared_ptr<Actor>> Actors;    
   };
 
 

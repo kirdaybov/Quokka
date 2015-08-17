@@ -15,7 +15,7 @@ namespace quokka
 	class Actor
 	{
 	public:
-		~Actor()
+		virtual ~Actor()
 		{
 			for(ActorComponent* Component : Components)
 			{

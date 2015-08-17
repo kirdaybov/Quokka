@@ -21,9 +21,11 @@ namespace quokka
       
       //TODO: doesn't use inertia			
 			//this->Movement = Movement.Normalize()*Speed*Timer()->GetFrameTime();			
-
+      
       float DesiredRotation = QRotation::FromDirection(Movement).x;
       float CurrentRotation = GetOwner()->GetRotation().x;
+
+      //std::cout << std::endl << DesiredRotation;
       
       QRotation AddRotation;
 
@@ -36,6 +38,7 @@ namespace quokka
       GetOwner()->AddRotation(AddRotation);
 
       this->Movement = GetOwner()->GetRotation().RotateVector(Vector(1.f, 0.f))*Speed*Timer()->GetFrameTime();
+      std::cout << std::endl << "Mov:" << this->Movement.x << " " << this->Movement.y;
 		}
 
 		void Tick() override
@@ -61,6 +64,6 @@ namespace quokka
 		bool bWasMovement;
 		Vector Movement;
 		float Speed;
-    float RotationSpeed = M_PI;
+    float RotationSpeed = 3*M_PI;
 	};
 }

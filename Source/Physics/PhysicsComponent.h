@@ -22,7 +22,7 @@ namespace quokka
 		void SetOwner(Actor* Owner) override
 		{
 			ActorComponent::SetOwner(Owner);
-			PhysObject = GGame()->GetPhysics()->CreateSpherePhysObject(Owner->GetWorldPosition(), 0.1f);
+			PhysObject = GGame()->GetPhysics()->CreateSpherePhysObject(Owner->GetWorldPosition(), Size.x);
 		}
 
 		void Tick() override 
