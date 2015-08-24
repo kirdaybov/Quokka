@@ -10,7 +10,8 @@
 #include "RenderEvent.h"
 
 namespace quokka
-{
+{ 
+
 	class RenderableComponent : public ActorComponent
 	{
 	public:

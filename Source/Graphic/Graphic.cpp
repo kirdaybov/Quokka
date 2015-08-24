@@ -5,6 +5,27 @@
 
 namespace quokka
 {
+  struct TGA_HEADER
+  {
+    char  identsize;          // size of ID field that follows 18 byte header (0 usually)
+    char  colourmaptype;      // type of colour map 0=none, 1=has palette
+    char  imagetype;          // type of image 0=none,1=indexed,2=rgb,3=grey,+8=rle packed
+
+    char colourmapstart;     // first colour map entry in palette
+    char colourmaplength;    // number of colours in palette
+
+    short  colourmapbits;      // number of bits per palette entry 15,16,24,32
+
+    short xstart;             // image x origin
+    short ystart;             // image y origin
+    short width;              // image width in pixels
+    short height;             // image height in pixels
+
+    char  bits;               // image bits per pixel 8,16,24,32
+    char  descriptor;         // image descriptor bits (vh flip bits)
+
+    // pixel data follows header    
+  };
 
 	void OpenGLGraphic::InitForWindows(HWND hWnd)
 	{
@@ -29,7 +50,62 @@ namespace quokka
 
 		// TODO: maybe put it in a different method?
 		wglMakeCurrent(hDC, hRC);
+
+    InitTexture();
 	}
+
+  void OpenGLGraphic::InitTexture()
+  {
+    std::string TextureFolder;
+    LoadImage("..//Textures//Ship.tga");
+
+  }
+
+  void OpenGLGraphic::LoadImage(char *filename)
+  {
+    printf(filename);
+    // Читаем заголовок TGA
+    TGA_HEADER header;
+    FILE* file = fopen(filename, "rb");
+    fread(&header, sizeof(TGA_HEADER), 1, file);
+
+    // Вынести
+    int width = header.width;
+    int height = header.height;
+
+    BYTE* data = (BYTE*)malloc(width*height * 4);
+
+    fread(data, width*height * 4, 1, file);
+    fclose(file);
+
+    BYTE* current = data;
+    for (int i = 0; i < width*height * 4; i++)
+    {
+      if (i % 4 == 2)
+      {
+        BYTE* red = current - 2;
+        BYTE* blue = current;
+        BYTE buffer = *blue;
+        memcpy(blue, red, 1);
+        memcpy(red, &buffer, 1);
+      }
+      current++;
+    }
+
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    free(data);
+    textures[id] = Texture(texture, width, height);
+  }
 
 	int OpenGLGraphic::AddObjectToRender(Event* A_RenderEvent)
 	{
@@ -92,6 +168,11 @@ namespace quokka
 
 	void OpenGLGraphic::DrawObject(RenderObject Object)
 	{
+    glBindTexture(GL_TEXTURE_2D, Textures[Object.Texture]);
+    glEnable(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
 		float ScreenRatio = GApp()->Height()/GApp()->Width();
     Vector v[4] =
     {

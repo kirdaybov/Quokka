@@ -2,6 +2,7 @@
 
 #include <windows.h>
 #include <vector>
+#include <unordered_map>
 #include <GL/GL.h>
 
 //#include "Quokka.h"
@@ -30,6 +31,9 @@ namespace quokka
 		}
 	
 		void InitForWindows(HWND hWnd);
+    void InitTexture();
+    void LoadImage(char *filename);
+
 		int AddObjectToRender(Event* A_RenderEvent);
 		int UpdateCamera(Event* A_CameraEvent);
 
@@ -45,6 +49,7 @@ namespace quokka
 
 		Vector CameraPosition;
 		std::vector<RenderObject> ObjectsToRender;
+    std::unordered_map<std::string, GLuint> Textures;
 
     float Scale = 0.3f;
 	};

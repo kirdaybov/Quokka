@@ -6,10 +6,11 @@
 namespace quokka
 {
 	struct RenderObject
-	{
+	{    
 		Vector Position;
     QRotation Rotation;
 		Vector Size;
 		Color Color;
+    std::string Texture;
 	};
 }
