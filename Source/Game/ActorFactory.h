@@ -62,7 +62,7 @@ namespace quokka
       Actor* Enemy = new Actor();
       Enemy->SetWorldPosition(WorldPosition);
       Enemy->AddComponent(new AIComponent(bFemale));
-      Enemy->AddComponent(new RenderableComponent(bFemale ? Color(1.f, .6f, .6f) : Color(.6f, .6f, 1.f)));
+      Enemy->AddComponent(new RenderableComponent(bFemale ? Color(1.f, .6f, .6f) : Color(.6f, .6f, 1.f), "Ship"));
       Enemy->AddComponent(new MovementComponent(1.0f));
       Enemy->AddComponent(new PhysicsComponent(Vector(0.1f, 0.1f)));
 

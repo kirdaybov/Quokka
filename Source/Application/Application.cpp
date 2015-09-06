@@ -2,6 +2,6 @@
 
 namespace quokka
 {
-	Application* GApp() { return WinApplication::GetInstance();	}
-	WinApplication* WinApplication::Instance = NULL;
+	QApplication* GApp() { return QWinApplication::GetInstance();	}
+	QWinApplication* QWinApplication::Instance = NULL;
 }

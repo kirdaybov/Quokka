@@ -15,7 +15,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
                    LPSTR lpCmdLine,
                    int nCmdShow)
 {
-	quokka::Application* app = new quokka::WinApplication(hInstance);
+	quokka::QApplication* app = new quokka::QWinApplication(hInstance);
   app->Init();
   app->Run();
   app->Shutdown();

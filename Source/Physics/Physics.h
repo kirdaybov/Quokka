@@ -30,7 +30,7 @@ namespace quokka
     float Radius;
   };
 
-	class Physics
+	class QPhysics
 	{
 	public:
 

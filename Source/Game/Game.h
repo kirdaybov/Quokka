@@ -5,8 +5,10 @@
 
 #include <vector>
 #include <memory>
+
 #include "Actor/Actor.h"
 #include "Profiler/Profiler.h"
+#include "PlayerState.h"
 
 namespace quokka
 {
@@ -25,7 +27,7 @@ namespace quokka
 
 		void Init();
 
-    Physics* GetPhysics() { return Physics; }
+    QPhysics* GetPhysics() { return Physics; }
 
     int SpawnPerson(Event* A_MouseClickEvent);
 		
@@ -76,6 +78,11 @@ namespace quokka
       return res;
     }
 
+    QPlayerState* GetLocalPState()
+    {
+      return PlayerStates[0];
+    }
+
     ActorFactory* Factory = nullptr;    
   private:
 
@@ -90,8 +97,9 @@ namespace quokka
     bool bStop;
 
     Actor* Hero = nullptr;	
-	
-	  Physics* Physics;	
+    QPhysics* Physics = nullptr;
+
+    std::vector<QPlayerState*> PlayerStates;
 		std::vector<std::shared_ptr<Actor>> Actors;    
   };
 

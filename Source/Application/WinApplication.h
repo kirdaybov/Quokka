@@ -7,6 +7,7 @@
 
 #include "Game/Game.h"
 #include "Common/Timer.h"
+#include "Common/ConfigFileReader.h"
 #include "Input/Input.h"
 #include "Profiler/Profiler.h"
 #include "Events/EventManager.h"
@@ -15,23 +16,26 @@
 #include "Quokka.h"
 
 namespace quokka
-{  
+{ 
+
 	// Designed to be a singletone
-	class WinApplication : public Application
+	class QWinApplication : public QApplication
 	{
     friend static LRESULT CALLBACK WndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 	public:
-		WinApplication(HINSTANCE a_hInstance) : Application()
+		QWinApplication(HINSTANCE a_hInstance) : QApplication()
 			,Game()
 			,hInstance(a_hInstance)
 			,bQuit(false)
 		{
 			Instance = this;
 		}
-		static WinApplication* GetInstance()	{	return Instance; }				
+		static QWinApplication* GetInstance()	{	return Instance; }				
 		
 		virtual void Init()
 		{
+      InitConfig();
+
 			CreateConsole();
 			InitWindowsRoutine();
 
@@ -44,6 +48,16 @@ namespace quokka
 
 			Input = new quokka::Input();
 		}
+
+    void InitConfig()
+    {
+      QConfigFileReader cfr;
+      cfr.Read(GetExePath() + "\\config.ini");
+      
+      Settings.fullscreen = cfr.Values["window/fullscreen"].GetBool();
+      Settings.width = cfr.Values["window/width"].GetInt();
+      Settings.height = cfr.Values["window/height"].GetInt(); 
+    }
 
 		void InitWindowsRoutine()
 		{
@@ -75,7 +89,7 @@ namespace quokka
 				szTitle,
 				WS_OVERLAPPEDWINDOW,
 				CW_USEDEFAULT, CW_USEDEFAULT,
-				1024, 768,
+				Settings.width, Settings.height,
 				NULL,
 				NULL,
 				hInstance,
@@ -148,16 +162,16 @@ namespace quokka
 			switch (Msg)
 			{
 			case WM_KEYDOWN:		
-				WinApplication::GetInstance()->Input->Keyboard_OnKeyPressed(wParam);
+				QWinApplication::GetInstance()->Input->Keyboard_OnKeyPressed(wParam);
 				break;
 			case WM_KEYUP:		
-        WinApplication::GetInstance()->Input->Keyboard_OnKeyReleased(wParam);
+        QWinApplication::GetInstance()->Input->Keyboard_OnKeyReleased(wParam);
 				break;
       case WM_RBUTTONDOWN:
-        WinApplication::GetInstance()->Input->Mouse_RightButtonDown();
+        QWinApplication::GetInstance()->Input->Mouse_RightButtonDown();
         break;
       case WM_LBUTTONDOWN:
-        WinApplication::GetInstance()->Input->Mouse_LeftButtonDown();
+        QWinApplication::GetInstance()->Input->Mouse_LeftButtonDown();
         break;
 			case WM_CLOSE:
 				GApp()->Quit();
@@ -236,14 +250,25 @@ namespace quokka
 			return float(Rect.bottom - Rect.top);
 		}
 
+    std::string GetExePath() override
+    {
+      char buffer[MAX_PATH];
+      GetModuleFileName(NULL, buffer, MAX_PATH);
+      std::string::size_type pos = std::string(buffer).find_last_of("\\/");
+      std::string path = std::string(buffer).substr(0, pos);
+      return path;
+    }
+
+
 		HWND hWnd;
 		HINSTANCE hInstance;
+
 		Game* Game;
 		Graphic* Graphic;
 		Input* Input;
 
 		bool bQuit;
 
-		static WinApplication* Instance;
+		static QWinApplication* Instance;
 	};
 }

@@ -15,14 +15,15 @@ namespace quokka
 	class RenderableComponent : public ActorComponent
 	{
 	public:
-		RenderableComponent(Color A_Color):ActorComponent()
-			,Color(A_Color)
+		RenderableComponent(Color A_Color, std::string A_Texture = ""):ActorComponent()
+      , Color(A_Color), Texture(A_Texture)
 		{}
 		virtual void Tick()
 		{
 			RenderObject ro;
 			ro.Position = GetOwner()->GetWorldPosition();			
-      ro.Rotation = GetOwner()->GetRotation();
+      ro.Rotation = GetOwner()->GetRotation();      
+      ro.Texture = Texture;
 
 			PhysicsComponent* PhComp = GetOwner()->GetComponent<PhysicsComponent>();
 			if(PhComp)
@@ -35,5 +36,6 @@ namespace quokka
 		}
 	private:
 		Color Color;
+    std::string Texture;
 	};
 }

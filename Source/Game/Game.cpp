@@ -6,7 +6,9 @@ namespace quokka
 {
 	void Game::Init()
 	{
-    Physics = new quokka::Physics();
+    Physics = new quokka::QPhysics();
+
+    PlayerStates.push_back(new QPlayerState());
 
 		Factory = new ActorFactory(this);
 		//Factory->CreateWorld(30);

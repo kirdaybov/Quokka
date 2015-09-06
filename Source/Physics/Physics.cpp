@@ -4,7 +4,7 @@
 namespace quokka
 {
 
-  void Physics::Tick()
+  void QPhysics::Tick()
   {    
     for (int i = 0; i < PhysObjects.size(); i++)
     {      

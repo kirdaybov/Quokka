@@ -57,16 +57,40 @@ namespace quokka
   void OpenGLGraphic::InitTexture()
   {
     std::string TextureFolder;
-    LoadImage("..//Textures//Ship.tga");
+    LoadImage("Ship.tga");
+
+    HANDLE hFind;
+    WIN32_FIND_DATA data;
+
+    hFind = FindFirstFile((GApp()->GetExePath() + "\\Textures/*.*").c_str(), &data);
+    if (hFind != INVALID_HANDLE_VALUE) {
+      do {
+        //TODO: make a function
+        {
+          std::string filename = data.cFileName;
+          if (filename.length() < 4) continue;
+          std::string format = filename.substr(filename.length() - 4, 4);
+          if (format.compare(".tga") == 0)
+            LoadImage(filename);
+        }
+        printf("%s\n", data.cFileName);
+      } while (FindNextFile(hFind, &data));
+      FindClose(hFind);
+    }
 
   }
 
-  void OpenGLGraphic::LoadImage(char *filename)
+  void OpenGLGraphic::LoadImage(std::string filename)
   {
-    printf(filename);
     // Читаем заголовок TGA
     TGA_HEADER header;
-    FILE* file = fopen(filename, "rb");
+        
+    std::string path = GApp()->GetExePath();
+    path.append("\\Textures\\"); 
+    path.append(filename);
+
+    FILE* file;
+    fopen_s(&file, path.c_str(), "rb");
     fread(&header, sizeof(TGA_HEADER), 1, file);
 
     // Вынести
@@ -102,9 +126,11 @@ namespace quokka
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     free(data);
-    textures[id] = Texture(texture, width, height);
+
+    filename.erase(filename.length() - 4, 4);    
+    Textures[filename] = texture;
   }
 
 	int OpenGLGraphic::AddObjectToRender(Event* A_RenderEvent)
@@ -126,6 +152,9 @@ namespace quokka
 		glClearColor( 0.5f, 0.5f, 0.5f, 0.5f );
 		glClear( GL_COLOR_BUFFER_BIT );
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 		glPushMatrix();
 		glRotatef( 0.0f, 0.0f, 0.0f, 1.0f );
     
@@ -140,8 +169,8 @@ namespace quokka
     glVertex2f(-1.f, -0.9f);
     glEnd();
 
-		glBegin( GL_QUADS );			
-		
+    glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+
 		for(RenderObject Object : ObjectsToRender)
 		{
 			DrawObject(Object);
@@ -152,7 +181,6 @@ namespace quokka
     //glColor3f(1, 1, 0); glVertex2f( 0.5f, 0.5f);
     //glColor3f(1, 1, 0); glVertex2f( 0.5f, -0.5f);
 
-		glEnd();
 		glPopMatrix();
 
 		SwapBuffers(hDC);
@@ -173,6 +201,8 @@ namespace quokka
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+    glBegin(GL_QUADS);
+
 		float ScreenRatio = GApp()->Height()/GApp()->Width();
     Vector v[4] =
     {
@@ -181,11 +211,15 @@ namespace quokka
       Object.Rotation.RotateVector(Vector( + Object.Size.x / 2, + Object.Size.y / 2)),
       Object.Rotation.RotateVector(Vector( + Object.Size.x / 2, - Object.Size.y / 2))
     };
+
+    Vector t[4] = { Vector(0, 0), Vector(1, 0), Vector(1, 1), Vector(0, 1) };
     for (int i = 0; i < 4; i++)
     {
-      glColor3f(Object.Color.r, Object.Color.g, Object.Color.b); 
+      //glColor3f(Object.Color.r, Object.Color.g, Object.Color.b); 
+      glTexCoord2f(t[i].x, t[i].y);
       glVertex2f(Scale*ScreenRatio*(Object.Position.x + v[i].x - CameraPosition.x), Scale*(Object.Position.y + v[i].y - CameraPosition.y));
     }
       
+    glEnd();
 	}
 }

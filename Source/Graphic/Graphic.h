@@ -32,7 +32,7 @@ namespace quokka
 	
 		void InitForWindows(HWND hWnd);
     void InitTexture();
-    void LoadImage(char *filename);
+    void LoadImage(std::string filename);
 
 		int AddObjectToRender(Event* A_RenderEvent);
 		int UpdateCamera(Event* A_CameraEvent);
@@ -51,7 +51,7 @@ namespace quokka
 		std::vector<RenderObject> ObjectsToRender;
     std::unordered_map<std::string, GLuint> Textures;
 
-    float Scale = 0.3f;
+    float Scale = 1.f;
 	};
 
 }

@@ -6,7 +6,7 @@ namespace quokka
 {
 
 Mouse::Mouse()
-      :hWnd(dynamic_cast<WinApplication*>(GApp())->GetHWND())
+      :hWnd(dynamic_cast<QWinApplication*>(GApp())->GetHWND())
     {}
     //POINT GetPosition()
     //{

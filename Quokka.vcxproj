@@ -19,6 +19,7 @@
     <ClInclude Include="Source\Camera\CameraComponent.h" />
     <ClInclude Include="Source\Camera\CameraEvent.h" />
     <ClInclude Include="Source\Common\Color.h" />
+    <ClInclude Include="Source\Common\ConfigFileReader.h" />
     <ClInclude Include="Source\Common\Delegates.h" />
     <ClInclude Include="Source\Common\Singletone.h" />
     <ClInclude Include="Source\Common\Timer.h" />
@@ -28,6 +29,7 @@
     <ClInclude Include="Source\Events\EventManager.h" />
     <ClInclude Include="Source\Game\ActorFactory.h" />
     <ClInclude Include="Source\Game\Game.h" />
+    <ClInclude Include="Source\Game\PlayerState.h" />
     <ClInclude Include="Source\Graphic\Graphic.h" />
     <ClInclude Include="Source\Graphic\RenderComponent.h" />
     <ClInclude Include="Source\Graphic\RenderEvent.h" />
@@ -85,12 +87,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(IncludePath);$(SolutionDir)\$(ProjectName)\Source</IncludePath>
-    <OutDir>$(SolutionDir)$\..\Build\$(ProjectName)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)$\..\Build\Intermediate\</IntDir>
+    <OutDir>$(SolutionDir)$\..\..\..\Build\</OutDir>
+    <IntDir>$(SolutionDir)$\..\..\..\Build\Intermediate\</IntDir>
+    <TargetName>$(ProjectName)_debug</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IntDir>$(SolutionDir)$\..\Build\Intermediate\</IntDir>
-    <OutDir>$(SolutionDir)$\..\Build\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)$\..\..\..\Build\Intermediate\</IntDir>
+    <OutDir>$(SolutionDir)$\..\..\..\Build\</OutDir>
     <IncludePath>$(IncludePath);$(SolutionDir)\$(ProjectName)\Source</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -117,6 +120,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
